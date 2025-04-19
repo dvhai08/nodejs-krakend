@@ -45,6 +45,10 @@ app.disable('x-powered-by')
 
 app.use('/api/v1', route)
 
+app.get('/', (req, res) => {
+	res.send('Hello World!')
+})
+
 server.listen(process.env.PORT, '0.0.0.0', () => {
 	if (process.env.NODE_ENV !== 'production') {
 		console.log('server is running on port ' + server.address().port)

@@ -155,6 +155,9 @@
 			"output_encoding": "no-op",
 			"cache_ttl": "3600ms",
 			"timeout": "7200ms",
+			"input_headers": [
+				"*"
+			],
 			"backend": [
 				{
 					"host": [
@@ -478,23 +481,7 @@
 			"method": "POST",
 			"concurrent_calls": 1,
 			"input_headers": [
-				"Accept-Encoding",
-				"Accept-Language",
-				"access-control-allow-origin",
-				"Access-Control-Request-Headers",
-				"Access-Control-Request-Method",
-				"Authorization",
-				"Cache-Control",
-				"Connection",
-				"Content-Type",
-				"Host",
-				"If-Modified-Since",
-				"Keep-Alive",
-				"Key",
-				"Origin",
-				"Pragma",
-				"User-Agent",
-				"X-Custom-Header"
+				"*"
 			],
 			"output_encoding": "no-op",
 			"cache_ttl": "3600ms",
@@ -569,23 +556,7 @@
 			"method": "GET",
 			"concurrent_calls": 1,
 			"input_headers": [
-				"Accept-Encoding",
-				"Accept-Language",
-				"access-control-allow-origin",
-				"Access-Control-Request-Headers",
-				"Access-Control-Request-Method",
-				"Authorization",
-				"Cache-Control",
-				"Connection",
-				"Content-Type",
-				"Host",
-				"If-Modified-Since",
-				"Keep-Alive",
-				"Key",
-				"Origin",
-				"Pragma",
-				"User-Agent",
-				"X-Custom-Header"
+				"*"
 			],
 			"output_encoding": "no-op",
 			"cache_ttl": "3600ms",
@@ -639,23 +610,7 @@
 			"method": "GET",
 			"concurrent_calls": 1,
 			"input_headers": [
-				"Accept-Encoding",
-				"Accept-Language",
-				"access-control-allow-origin",
-				"Access-Control-Request-Headers",
-				"Access-Control-Request-Method",
-				"Authorization",
-				"Cache-Control",
-				"Connection",
-				"Content-Type",
-				"Host",
-				"If-Modified-Since",
-				"Keep-Alive",
-				"Key",
-				"Origin",
-				"Pragma",
-				"User-Agent",
-				"X-Custom-Header"
+				"*"
 			],
 			"output_encoding": "no-op",
 			"cache_ttl": "3600ms",

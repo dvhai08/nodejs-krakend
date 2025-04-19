@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   #####################
   # Book Service
@@ -13,19 +12,7 @@ services:
       interval: 120s
       retries: 5
       start_period: 60s
-      test: |
-        touch healthcheck.txt &&
-        mkdir healthcheck && 
-        mv healthcheck.txt healthcheck &&
-        cd healthcheck &&
-        echo "hello my docker container is working fine" >> healthcheck.txt && 
-        cat healthcheck.txt &&
-        sleep 5 &&
-        rm "${PWD}/healthcheck.txt" &&
-        cd .. &&
-        sleep 5 &&
-        rmdir "${PWD}/healthcheck" &&
-        exit 0
+      test: curl --fail http://localhost:3000 || exit 1
       timeout: 30s
     ports:
       - 3000:3000
@@ -49,19 +36,7 @@ services:
       interval: 120s
       retries: 5
       start_period: 60s
-      test: |
-        touch healthcheck.txt &&
-        mkdir healthcheck && 
-        mv healthcheck.txt healthcheck &&
-        cd healthcheck &&
-        echo "hello my docker container is working fine" >> healthcheck.txt && 
-        cat healthcheck.txt &&
-        sleep 5 &&
-        rm "${PWD}/healthcheck.txt" &&
-        cd .. &&
-        sleep 5 &&
-        rmdir "${PWD}/healthcheck" &&
-        exit 0
+      test: curl --fail http://localhost:3001 || exit 1
       timeout: 30s
     ports:
       - 3001:3001
@@ -79,23 +54,10 @@ services:
     image: mongo
     restart: always
     healthcheck:
-      interval: 120s
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/store --quiet
+      interval: 60s
+      timeout: 10s
       retries: 5
-      start_period: 60s
-      test: |
-        touch healthcheck.txt &&
-        mkdir healthcheck && 
-        mv healthcheck.txt healthcheck &&
-        cd healthcheck &&
-        echo "hello my docker container is working fine" >> healthcheck.txt && 
-        cat healthcheck.txt &&
-        sleep 5 &&
-        rm "${PWD}/healthcheck.txt" &&
-        cd .. &&
-        sleep 5 &&
-        rmdir "${PWD}/healthcheck" &&
-        exit 0
-      timeout: 30s
     ports:
       - 27017:27017
     volumes:
@@ -106,9 +68,15 @@ services:
   # krakend Service
   #####################
   proxy:
-    image: devopsfaith/krakend:watch
+    image: krakend:latest
     volumes:
       - ./krakend/configs:/etc/krakend
+    healthcheck:
+      interval: 120s
+      retries: 5
+      start_period: 60s
+      test: wget --no-verbose --tries=1 --spider http://localhost:8080/__health || exit 1
+      timeout: 30s
     ports:
       - 8080:8080
       - 8090:8090
