@@ -1,0 +1,130 @@
+version: '3.8'
+services:
+  #####################
+  # Book Service
+  #####################
+  book-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./books/Dockerfile
+    env_file: ./books/.env
+    healthcheck:
+      interval: 120s
+      retries: 5
+      start_period: 60s
+      test: |
+        touch healthcheck.txt &&
+        mkdir healthcheck && 
+        mv healthcheck.txt healthcheck &&
+        cd healthcheck &&
+        echo "hello my docker container is working fine" >> healthcheck.txt && 
+        cat healthcheck.txt &&
+        sleep 5 &&
+        rm "${PWD}/healthcheck.txt" &&
+        cd .. &&
+        sleep 5 &&
+        rmdir "${PWD}/healthcheck" &&
+        exit 0
+      timeout: 30s
+    ports:
+      - 3000:3000
+    volumes:
+      - ./books:/usr/src/books
+      - /usr/src/books/node_modules
+    networks:
+      - api-gateway
+    depends_on:
+      - db
+  #####################
+  # Author Service
+  #####################
+  author-service:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./authors/Dockerfile
+    env_file: ./authors/.env
+    healthcheck:
+      interval: 120s
+      retries: 5
+      start_period: 60s
+      test: |
+        touch healthcheck.txt &&
+        mkdir healthcheck && 
+        mv healthcheck.txt healthcheck &&
+        cd healthcheck &&
+        echo "hello my docker container is working fine" >> healthcheck.txt && 
+        cat healthcheck.txt &&
+        sleep 5 &&
+        rm "${PWD}/healthcheck.txt" &&
+        cd .. &&
+        sleep 5 &&
+        rmdir "${PWD}/healthcheck" &&
+        exit 0
+      timeout: 30s
+    ports:
+      - 3001:3001
+    volumes:
+      - ./authors:/usr/src/authors
+      - /usr/src/authors/node_modules
+    networks:
+      - api-gateway
+    depends_on:
+      - db
+  #####################
+  # Mongo Service
+  #####################
+  db:
+    image: mongo
+    restart: always
+    healthcheck:
+      interval: 120s
+      retries: 5
+      start_period: 60s
+      test: |
+        touch healthcheck.txt &&
+        mkdir healthcheck && 
+        mv healthcheck.txt healthcheck &&
+        cd healthcheck &&
+        echo "hello my docker container is working fine" >> healthcheck.txt && 
+        cat healthcheck.txt &&
+        sleep 5 &&
+        rm "${PWD}/healthcheck.txt" &&
+        cd .. &&
+        sleep 5 &&
+        rmdir "${PWD}/healthcheck" &&
+        exit 0
+      timeout: 30s
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/var/lib/data
+    networks:
+      - api-gateway
+  #####################
+  # krakend Service
+  #####################
+  proxy:
+    image: devopsfaith/krakend:watch
+    volumes:
+      - ./krakend/configs:/etc/krakend
+    ports:
+      - 8080:8080
+      - 8090:8090
+    command: [ "run", "-d", "-c", "/etc/krakend/krakend.json" ]
+    depends_on:
+      - book-service
+      - author-service
+    networks:
+      - api-gateway
+  ######################
+  # Volumes Persistent
+  ######################
+volumes:
+  mongo-data:
+    #########################
+    # Networks Layer Protocol
+    #########################
+networks:
+  api-gateway:
