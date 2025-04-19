@@ -1,4 +1,4 @@
-### Express Krakend
+### Nodejs Krakend
 
 simple fake microservice using krakend api gateway
 
